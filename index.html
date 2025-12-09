@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Spin & Win</title>
+    <title>Energy Joker - Hold and Win</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         html, body {
             width: 100%;
             height: 100%;
@@ -19,6 +23,7 @@
             background: #000536;
             -webkit-user-select: none;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* ===== LOADER ===== */
@@ -33,29 +38,38 @@
             background: radial-gradient(circle at 50% 50%, #000D9C 0%, #000536 100%);
             transition: opacity 0.5s, visibility 0.5s;
         }
+
         .loader.hidden {
             opacity: 0;
             visibility: hidden;
+            pointer-events: none;
         }
+
         .loader__logo {
-            width: min(200px, 50vw);
+            width: 200px;
+            max-width: 50vw;
             margin-bottom: 30px;
         }
+
         .loader__bar {
-            width: min(240px, 60vw);
+            width: 240px;
+            max-width: 60vw;
             height: 24px;
             background: #000B55;
             border-radius: 100px;
             padding: 4px;
             position: relative;
+            overflow: hidden;
         }
+
         .loader__bar::before {
             content: '';
             position: absolute;
             inset: 4px;
-            background: #fff;
+            background: #1a1a4a;
             border-radius: 100px;
         }
+
         .loader__progress {
             position: relative;
             z-index: 2;
@@ -63,7 +77,7 @@
             width: 0%;
             background: linear-gradient(90deg, #FCEE21, #FF4732);
             border-radius: 100px;
-            transition: width 0.1s;
+            transition: width 0.15s ease-out;
         }
 
         /* ===== MAIN WRAPPER ===== */
@@ -74,45 +88,58 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow: hidden;
         }
 
         /* ===== LOGO ===== */
         .logo {
-            width: min(180px, 45vw);
-            margin-top: min(20px, 3vh);
-            animation: logoWobble 2s ease-in-out infinite;
+            width: 55vw;
+            max-width: 280px;
+            margin-top: 2vh;
+            z-index: 10;
+            animation: logoWobble 2.5s ease-in-out infinite;
         }
+
         @keyframes logoWobble {
-            0%, 100% { transform: scale(0.95); }
-            50% { transform: scale(1); }
+            0%, 100% { transform: scale(0.96); }
+            50% { transform: scale(1.02); }
         }
 
-        /* ===== WHEEL SECTION ===== */
-        .wheel-section {
+        /* ===== WHEEL CONTAINER ===== */
+        .wheel-container {
             position: relative;
-            width: min(320px, 80vw);
-            height: min(320px, 80vw);
-            margin-top: min(15px, 2vh);
+            width: 75vw;
+            max-width: 380px;
+            aspect-ratio: 1;
+            margin-top: 1vh;
+            z-index: 5;
         }
 
-        /* Glow ring around wheel */
+        /* Electric glow ring */
         .wheel__glow {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 130%;
-            height: 130%;
+            width: 135%;
+            height: 135%;
             transform: translate(-50%, -50%);
             background: url('img/wheel-around.webp') center / contain no-repeat;
             pointer-events: none;
+            z-index: 1;
         }
 
-        /* Effect rings */
+        /* Effect rings - pulsing electricity */
         .wheel__effects {
             position: absolute;
-            inset: 0;
+            top: 50%;
+            left: 50%;
+            width: 180%;
+            height: 180%;
+            transform: translate(-50%, -50%);
             pointer-events: none;
+            z-index: 0;
         }
+
         .wheel__ring {
             position: absolute;
             inset: 0;
@@ -120,221 +147,233 @@
             background-position: center;
             background-repeat: no-repeat;
             mix-blend-mode: screen;
+            opacity: 0.8;
         }
+
         .wheel__ring--1 {
             background-image: url('img/effect-ring-1.webp');
-            animation: ring1 3s ease-in-out infinite;
+            animation: ring1 2.5s ease-in-out infinite;
         }
+
         .wheel__ring--2 {
             background-image: url('img/effect-ring-2.webp');
-            animation: ring2 3s ease-in-out infinite 1s;
+            animation: ring2 2.5s ease-in-out infinite 0.8s;
         }
+
         .wheel__ring--3 {
             background-image: url('img/effect-ring-3.webp');
-            animation: ring3 3s ease-in-out infinite 2s;
-        }
-        @keyframes ring1 {
-            0%, 100% { transform: scale(1.8); opacity: 1; }
-            50% { transform: scale(3.5); opacity: 1; }
-        }
-        @keyframes ring2 {
-            0%, 100% { transform: scale(1.3); opacity: 1; }
-            50% { transform: scale(2.3); opacity: 1; }
-        }
-        @keyframes ring3 {
-            0%, 100% { transform: scale(1.3); opacity: 1; }
-            50% { transform: scale(2.3); opacity: 1; }
+            animation: ring3 2.5s ease-in-out infinite 1.6s;
         }
 
-        /* Arrow */
+        @keyframes ring1 {
+            0%, 100% { transform: scale(0.5); opacity: 0.9; }
+            50% { transform: scale(1); opacity: 0.3; }
+        }
+
+        @keyframes ring2 {
+            0%, 100% { transform: scale(0.4); opacity: 0.8; }
+            50% { transform: scale(0.9); opacity: 0.2; }
+        }
+
+        @keyframes ring3 {
+            0%, 100% { transform: scale(0.45); opacity: 0.85; }
+            50% { transform: scale(0.95); opacity: 0.25; }
+        }
+
+        /* Arrow pointer */
         .wheel__arrow {
             position: absolute;
-            top: -8%;
+            top: -5%;
             left: 50%;
-            width: 20%;
+            width: 15%;
             transform: translateX(-50%);
-            z-index: 10;
+            z-index: 20;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
         }
 
-        /* Spinner (wheel image + text) */
+        /* Wheel spinner */
         .wheel__spinner {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 90%;
-            height: 90%;
-            transform: translate(-50%, -50%) rotate(-40deg);
-            z-index: 5;
+            width: 92%;
+            height: 92%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            z-index: 10;
         }
+
         .wheel__spinner.idle {
-            animation: wheelIdle 4s ease-in-out infinite;
+            animation: wheelIdle 3s ease-in-out infinite;
         }
+
         @keyframes wheelIdle {
-            0%, 100% { transform: translate(-50%, -50%) rotate(-40deg); }
-            50% { transform: translate(-50%, -50%) rotate(-52deg); }
+            0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
+            50% { transform: translate(-50%, -50%) rotate(5deg); }
         }
+
         .wheel__spinner img {
             width: 100%;
             height: 100%;
+            object-fit: contain;
         }
-
-        /* Prize texts */
-        .wheel__texts {
-            position: absolute;
-            inset: 0;
-            transform: rotate(45deg);
-            pointer-events: none;
-        }
-        .wheel__text {
-            position: absolute;
-            display: flex;
-            align-items: center;
-            padding-left: 5%;
-            font-size: min(14px, 3.5vw);
-            font-weight: 900;
-            white-space: nowrap;
-        }
-        .wheel__text:nth-child(odd) { color: #fff; }
-        .wheel__text:nth-child(even) { color: #5a0040; }
-        .wheel__text--1 { transform: rotate(-137deg); left: 10%; top: 22%; }
-        .wheel__text--2 { transform: rotate(-93deg); left: 30%; top: 12%; }
-        .wheel__text--3 { transform: rotate(-48deg); left: 52%; top: 20%; }
-        .wheel__text--4 { transform: rotate(-3deg); left: 62%; top: 42%; }
-        .wheel__text--5 { transform: rotate(42deg); left: 52%; top: 64%; }
-        .wheel__text--6 { transform: rotate(87deg); left: 30%; top: 74%; }
-        .wheel__text--7 { transform: rotate(132deg); left: 10%; top: 64%; }
-        .wheel__text--8 { transform: rotate(177deg); left: 0%; top: 42%; }
 
         /* Center button */
         .wheel__btn {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 25%;
-            height: 25%;
+            width: 22%;
+            height: 22%;
             transform: translate(-50%, -50%);
-            background: url('img/btn.webp') center top / 100% auto no-repeat;
+            background: url('img/btn.webp') center / contain no-repeat;
             border: none;
             border-radius: 50%;
             cursor: pointer;
-            z-index: 15;
-        }
-        .wheel__btn.disabled {
-            background-position: center bottom;
-            pointer-events: none;
+            z-index: 25;
+            transition: transform 0.2s;
         }
 
-        /* ===== BOTTOM SCENE (Joker + Button + Fruits) ===== */
+        .wheel__btn:active {
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+
+        .wheel__btn.disabled {
+            pointer-events: none;
+            filter: brightness(0.7);
+        }
+
+        /* ===== BOTTOM SCENE ===== */
         .bottom-scene {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: min(240px, 38vh);
+            height: 40vh;
+            max-height: 300px;
             pointer-events: none;
+            z-index: 15;
         }
 
-        /* Joker left */
+        /* Joker character */
         .joker {
             position: absolute;
-            left: -5%;
-            bottom: -3%;
-            width: min(200px, 45vw);
-            animation: jokerFloat 6s ease-in-out infinite;
-            z-index: 10;
-        }
-        @keyframes jokerFloat {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-5px, -10px); }
+            left: -3%;
+            bottom: 0;
+            width: 55vw;
+            max-width: 280px;
+            animation: jokerFloat 4s ease-in-out infinite;
+            z-index: 12;
         }
 
-        /* Fruits right */
+        @keyframes jokerFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Fruits container */
         .fruits {
             position: absolute;
             right: 0;
             bottom: 0;
-            width: min(180px, 40vw);
-            height: min(180px, 35vh);
+            width: 45vw;
+            max-width: 200px;
+            height: 35vh;
+            max-height: 200px;
+            z-index: 11;
         }
+
         .fruit {
             position: absolute;
         }
+
         .fruit--grapes {
-            width: 45%;
-            right: 15%;
-            top: 0;
-            animation: fruitBounce 4s ease-in-out infinite;
-        }
-        .fruit--plum {
-            width: 35%;
-            right: 55%;
-            top: 35%;
-            animation: fruitBounce 4s ease-in-out infinite 0.5s;
-        }
-        .fruit--watermelon {
-            width: 70%;
-            right: 0;
-            bottom: -5%;
-            animation: fruitBounce 4s ease-in-out infinite 1s;
-        }
-        @keyframes fruitBounce {
-            0%, 100% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(-10deg) scale(1.03); }
+            width: 50%;
+            right: 20%;
+            top: 5%;
+            animation: fruitBounce 3.5s ease-in-out infinite;
         }
 
-        /* Spin button */
+        .fruit--plum {
+            width: 35%;
+            right: 60%;
+            top: 40%;
+            animation: fruitBounce 3.5s ease-in-out infinite 0.5s;
+        }
+
+        .fruit--watermelon {
+            width: 75%;
+            right: 0;
+            bottom: 0;
+            animation: fruitBounce 3.5s ease-in-out infinite 1s;
+        }
+
+        @keyframes fruitBounce {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(-5deg) scale(1.02); }
+        }
+
+        /* ===== SPIN BUTTON ===== */
         .spin-btn {
-            position: absolute;
+            position: fixed;
             left: 50%;
-            bottom: min(120px, 20vh);
+            bottom: 18vh;
             transform: translateX(-50%);
             display: flex;
             align-items: center;
             justify-content: center;
-            height: min(55px, 8vh);
-            padding: 0 min(30px, 6vw);
-            background: url('img/button_middle.webp') center / contain repeat-x;
+            height: 55px;
+            min-width: 180px;
+            padding: 0 20px;
+            background: url('img/button_middle.webp') center / auto 100% repeat-x;
             border: none;
             cursor: pointer;
-            z-index: 20;
+            z-index: 30;
             pointer-events: auto;
-            animation: btnPulse 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(86, 215, 255, 0.6));
+            animation: btnPulse 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 25px rgba(86, 215, 255, 0.7));
         }
+
         .spin-btn::before,
         .spin-btn::after {
             content: '';
             position: absolute;
             top: 0;
             bottom: 0;
-            width: min(85px, 18vw);
-            background-size: contain;
+            width: 70px;
+            background-size: auto 100%;
             background-repeat: no-repeat;
         }
+
         .spin-btn::before {
             right: 100%;
             background-image: url('img/button_left.webp');
             background-position: right center;
         }
+
         .spin-btn::after {
             left: 100%;
             background-image: url('img/button_right.webp');
             background-position: left center;
         }
+
         .spin-btn span {
-            font-size: min(26px, 5.5vw);
+            font-size: 24px;
             color: #ffee54;
-            text-shadow: 0 3px 0 rgba(0,0,0,0.6);
+            text-shadow: 0 3px 0 rgba(0,0,0,0.6), 0 0 10px rgba(255,238,84,0.5);
             text-transform: uppercase;
+            letter-spacing: 2px;
         }
+
         @keyframes btnPulse {
-            0%, 100% { transform: translateX(-50%) rotate(-3deg); }
-            50% { transform: translateX(-50%) rotate(3deg); }
+            0%, 100% { transform: translateX(-50%) scale(1) rotate(-2deg); }
+            50% { transform: translateX(-50%) scale(1.05) rotate(2deg); }
         }
+
         .spin-btn.disabled {
             pointer-events: none;
-            opacity: 0.7;
+            opacity: 0.6;
             animation: none;
+            filter: grayscale(0.3) drop-shadow(0 0 10px rgba(86, 215, 255, 0.3));
         }
 
         /* ===== WIN MODAL ===== */
@@ -346,111 +385,138 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: min(80px, 12vh);
+            padding-top: 10vh;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.4s, visibility 0.4s;
+            transition: opacity 0.5s, visibility 0.5s;
         }
+
         .modal.visible {
             opacity: 1;
             visibility: visible;
         }
 
-        /* Light burst */
+        /* Light burst effects */
         .modal__burst {
             position: absolute;
-            top: 30%;
+            top: 35%;
             left: 50%;
-            width: min(400px, 90vw);
-            height: min(400px, 90vw);
+            width: 100vw;
+            max-width: 500px;
+            aspect-ratio: 1;
             transform: translate(-50%, -50%);
             background: url('img/effect-flare.webp') center / contain no-repeat;
             mix-blend-mode: screen;
-            animation: burst1 20s linear infinite;
+            animation: burst1 25s linear infinite;
+            opacity: 0.9;
         }
+
         .modal__burst--2 {
-            width: min(300px, 70vw);
-            height: min(300px, 70vw);
-            animation: burst2 15s linear infinite;
+            width: 70vw;
+            max-width: 350px;
+            animation: burst2 18s linear infinite;
+            opacity: 0.7;
         }
+
         @keyframes burst1 {
             from { transform: translate(-50%, -50%) rotate(0deg); }
             to { transform: translate(-50%, -50%) rotate(-360deg); }
         }
+
         @keyframes burst2 {
             from { transform: translate(-50%, -50%) rotate(0deg); }
             to { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         .modal__logo {
-            width: min(180px, 45vw);
+            width: 50vw;
+            max-width: 220px;
             position: relative;
             z-index: 10;
-            animation: logoWobble 2s ease-in-out infinite;
+            animation: logoWobble 2.5s ease-in-out infinite;
         }
+
         .modal__title {
-            margin-top: min(30px, 4vh);
-            font-size: min(22px, 5vw);
+            margin-top: 4vh;
+            font-size: clamp(18px, 5vw, 26px);
             color: #0059f2;
             text-transform: uppercase;
-            text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;
+            text-shadow:
+                -2px -2px 0 #fff,
+                2px -2px 0 #fff,
+                -2px 2px 0 #fff,
+                2px 2px 0 #fff;
             position: relative;
             z-index: 10;
         }
+
         .modal__subtitle {
-            margin-top: min(15px, 2vh);
-            font-size: min(28px, 6vw);
+            margin-top: 2vh;
+            font-size: clamp(22px, 6vw, 32px);
             color: #f00800;
             text-transform: uppercase;
             text-align: center;
             line-height: 1.3;
-            text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;
+            text-shadow:
+                -2px -2px 0 #fff,
+                2px -2px 0 #fff,
+                -2px 2px 0 #fff,
+                2px 2px 0 #fff;
             position: relative;
             z-index: 10;
+            padding: 0 20px;
         }
+
         .modal__claim {
-            margin-top: min(35px, 5vh);
+            margin-top: 5vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: min(55px, 8vh);
-            padding: 0 min(40px, 8vw);
-            background: url('img/button_middle.webp') center / contain repeat-x;
+            height: 55px;
+            min-width: 200px;
+            padding: 0 25px;
+            background: url('img/button_middle.webp') center / auto 100% repeat-x;
             border: none;
             cursor: pointer;
             position: relative;
             z-index: 10;
-            animation: btnPulse 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(86, 215, 255, 0.6));
+            animation: btnPulse 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 25px rgba(86, 215, 255, 0.7));
         }
+
         .modal__claim::before,
         .modal__claim::after {
             content: '';
             position: absolute;
             top: 0;
             bottom: 0;
-            width: min(85px, 18vw);
-            background-size: contain;
+            width: 70px;
+            background-size: auto 100%;
             background-repeat: no-repeat;
         }
+
         .modal__claim::before {
             right: 100%;
             background-image: url('img/button_left.webp');
             background-position: right center;
         }
+
         .modal__claim::after {
             left: 100%;
             background-image: url('img/button_right.webp');
             background-position: left center;
         }
+
         .modal__claim span {
-            font-size: min(24px, 5vw);
+            font-size: clamp(18px, 5vw, 24px);
             color: #ffee54;
-            text-shadow: 0 3px 0 rgba(0,0,0,0.6);
+            text-shadow: 0 3px 0 rgba(0,0,0,0.6), 0 0 10px rgba(255,238,84,0.5);
             text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
         }
 
-        /* Coins rain */
+        /* Coins rain effect */
         .modal__coins {
             position: fixed;
             inset: 0;
@@ -464,36 +530,131 @@
         .modal__joker {
             position: fixed;
             right: -5%;
-            bottom: -5%;
-            width: min(180px, 40vw);
+            bottom: -3%;
+            width: 45vw;
+            max-width: 200px;
             z-index: 10;
+            animation: jokerFloat 4s ease-in-out infinite;
         }
 
         /* ===== SPIN ANIMATIONS ===== */
-        .spin-1 { animation: spinTo1 3s ease-out forwards !important; }
-        .spin-2 { animation: spinTo2 3s ease-out forwards !important; }
-        .spin-3 { animation: spinTo3 3s ease-out forwards !important; }
-        .spin-4 { animation: spinTo4 3s ease-out forwards !important; }
-        .spin-5 { animation: spinTo5 3s ease-out forwards !important; }
-        .spin-6 { animation: spinTo6 3s ease-out forwards !important; }
-        .spin-7 { animation: spinTo7 3s ease-out forwards !important; }
-        .spin-8 { animation: spinTo8 3s ease-out forwards !important; }
+        .wheel__spinner.spinning {
+            animation: none !important;
+        }
 
-        @keyframes spinTo1 { from { transform: translate(-50%, -50%) rotate(-40deg); } to { transform: translate(-50%, -50%) rotate(1080deg); } }
-        @keyframes spinTo2 { from { transform: translate(-50%, -50%) rotate(-40deg); } to { transform: translate(-50%, -50%) rotate(1035deg); } }
-        @keyframes spinTo3 { from { transform: translate(-50%, -50%) rotate(-40deg); } to { transform: translate(-50%, -50%) rotate(990deg); } }
-        @keyframes spinTo4 { from { transform: translate(-50%, -50%) rotate(-40deg); } to { transform: translate(-50%, -50%) rotate(945deg); } }
-        @keyframes spinTo5 { from { transform: translate(-50%, -50%) rotate(-40deg); } to { transform: translate(-50%, -50%) rotate(900deg); } }
-        @keyframes spinTo6 { from { transform: translate(-50%, -50%) rotate(-40deg); } to { transform: translate(-50%, -50%) rotate(1125deg); } }
-        @keyframes spinTo7 { from { transform: translate(-50%, -50%) rotate(-40deg); } to { transform: translate(-50%, -50%) rotate(1170deg); } }
-        @keyframes spinTo8 { from { transform: translate(-50%, -50%) rotate(-40deg); } to { transform: translate(-50%, -50%) rotate(1215deg); } }
+        .spin-to-1 { animation: spinTo1 4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards !important; }
+        .spin-to-2 { animation: spinTo2 4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards !important; }
+        .spin-to-3 { animation: spinTo3 4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards !important; }
+        .spin-to-4 { animation: spinTo4 4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards !important; }
+        .spin-to-5 { animation: spinTo5 4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards !important; }
+        .spin-to-6 { animation: spinTo6 4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards !important; }
+        .spin-to-7 { animation: spinTo7 4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards !important; }
+        .spin-to-8 { animation: spinTo8 4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards !important; }
+
+        /* 8 sectors = 45 degrees each. Final positions for arrow pointing to each sector */
+        @keyframes spinTo1 {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(1800deg); } /* 5 full rotations */
+        }
+        @keyframes spinTo2 {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(1845deg); } /* +45 */
+        }
+        @keyframes spinTo3 {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(1890deg); } /* +90 */
+        }
+        @keyframes spinTo4 {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(1935deg); } /* +135 */
+        }
+        @keyframes spinTo5 {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(1980deg); } /* +180 */
+        }
+        @keyframes spinTo6 {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(2025deg); } /* +225 */
+        }
+        @keyframes spinTo7 {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(2070deg); } /* +270 */
+        }
+        @keyframes spinTo8 {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(2115deg); } /* +315 */
+        }
 
         .spin-done {
             animation: spinWobble 2s ease-in-out infinite !important;
         }
+
         @keyframes spinWobble {
-            0%, 100% { transform: translate(-50%, -50%) rotate(1080deg); }
-            50% { transform: translate(-50%, -50%) rotate(1085deg); }
+            0%, 100% { transform: translate(-50%, -50%) rotate(1800deg); }
+            50% { transform: translate(-50%, -50%) rotate(1805deg); }
+        }
+
+        /* ===== RESPONSIVE ADJUSTMENTS ===== */
+        @media (max-height: 700px) {
+            .logo {
+                width: 45vw;
+                margin-top: 1vh;
+            }
+            .wheel-container {
+                width: 65vw;
+                margin-top: 0;
+            }
+            .spin-btn {
+                bottom: 12vh;
+                height: 48px;
+            }
+            .spin-btn span {
+                font-size: 20px;
+            }
+            .bottom-scene {
+                height: 35vh;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .logo {
+                width: 35vw;
+            }
+            .wheel-container {
+                width: 55vw;
+            }
+            .spin-btn {
+                bottom: 8vh;
+                height: 42px;
+            }
+            .spin-btn span {
+                font-size: 18px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .logo {
+                width: 280px;
+                margin-top: 3vh;
+            }
+            .wheel-container {
+                width: 350px;
+                margin-top: 2vh;
+            }
+            .joker {
+                width: 280px;
+                left: 5%;
+            }
+            .fruits {
+                width: 200px;
+            }
+            .spin-btn {
+                height: 60px;
+                min-width: 220px;
+            }
+            .spin-btn span {
+                font-size: 28px;
+            }
         }
     </style>
 </head>
@@ -501,51 +662,52 @@
 
 <!-- LOADER -->
 <div class="loader" id="loader">
-    <img class="loader__logo" src="img/logo.webp" alt="">
+    <img class="loader__logo" src="img/logo.webp" alt="Energy Joker">
     <div class="loader__bar">
         <div class="loader__progress" id="progress"></div>
     </div>
 </div>
 
-<!-- MAIN -->
+<!-- MAIN GAME -->
 <div class="wrapper">
     <!-- Logo -->
-    <img class="logo" src="img/logo.webp" alt="">
+    <img class="logo" src="img/logo.webp" alt="Energy Joker">
 
     <!-- Wheel -->
-    <div class="wheel-section">
+    <div class="wheel-container">
+        <!-- Electric effect rings -->
         <div class="wheel__effects">
             <div class="wheel__ring wheel__ring--1"></div>
             <div class="wheel__ring wheel__ring--2"></div>
             <div class="wheel__ring wheel__ring--3"></div>
         </div>
+
+        <!-- Glow ring -->
         <div class="wheel__glow"></div>
+
+        <!-- Arrow pointer -->
         <img class="wheel__arrow" src="img/wheel-arrow.webp" alt="">
+
+        <!-- Spinning wheel -->
         <div class="wheel__spinner idle" id="spinner">
-            <img src="img/wheel.webp" alt="">
-            <div class="wheel__texts">
-                <div class="wheel__text wheel__text--1">500€</div>
-                <div class="wheel__text wheel__text--2">100€</div>
-                <div class="wheel__text wheel__text--3">50€</div>
-                <div class="wheel__text wheel__text--4">25€</div>
-                <div class="wheel__text wheel__text--5">10€</div>
-                <div class="wheel__text wheel__text--6">100€</div>
-                <div class="wheel__text wheel__text--7">50€</div>
-                <div class="wheel__text wheel__text--8">25€</div>
-            </div>
+            <img src="img/wheel.webp" alt="Wheel">
         </div>
+
+        <!-- Center button -->
         <button class="wheel__btn" id="wheelBtn"></button>
     </div>
 
-    <!-- Bottom: Joker, Button, Fruits -->
+    <!-- Spin Button -->
+    <button class="spin-btn" id="spinBtn"><span>SPIN</span></button>
+
+    <!-- Bottom Scene: Joker and Fruits -->
     <div class="bottom-scene">
-        <img class="joker" src="img/left-person.webp" alt="">
+        <img class="joker" src="img/left-person.webp" alt="Joker">
         <div class="fruits">
             <img class="fruit fruit--grapes" src="img/1.webp" alt="">
             <img class="fruit fruit--plum" src="img/2.webp" alt="">
             <img class="fruit fruit--watermelon" src="img/3.webp" alt="">
         </div>
-        <button class="spin-btn" id="spinBtn"><span>SPIN</span></button>
     </div>
 </div>
 
@@ -553,67 +715,124 @@
 <div class="modal" id="modal">
     <div class="modal__burst"></div>
     <div class="modal__burst modal__burst--2"></div>
-    <img class="modal__logo" src="img/logo.webp" alt="">
+    <img class="modal__logo" src="img/logo.webp" alt="Energy Joker">
     <div class="modal__title">Your prize – <span id="prizeText">500€</span></div>
-    <div class="modal__subtitle">Register and claim<br>your prize!</div>
-    <button class="modal__claim" id="claimBtn"><span>CLAIM</span></button>
+    <div class="modal__subtitle">Inscris-toi et récupère<br>ton prix!</div>
+    <button class="modal__claim" id="claimBtn"><span>RÉCUPÉRER</span></button>
     <div class="modal__coins"></div>
-    <img class="modal__joker" src="img/right-person.webp" alt="">
+    <img class="modal__joker" src="img/right-person.webp" alt="Joker">
 </div>
 
 <script>
+// Configuration
 const CONFIG = {
-    winSector: 1,
+    winSector: 1,               // Which sector wins (1-8)
     prizes: ['500€', '100€', '50€', '25€', '10€', '100€', '50€', '25€'],
+    spinDuration: 4000,         // Spin animation duration in ms
     offerUrl: 'https://YOUR_OFFER_URL'
 };
 
+// Elements
 const $ = id => document.getElementById(id);
-let spinning = false;
+const loader = $('loader');
+const progress = $('progress');
+const spinner = $('spinner');
+const spinBtn = $('spinBtn');
+const wheelBtn = $('wheelBtn');
+const modal = $('modal');
+const prizeText = $('prizeText');
+const claimBtn = $('claimBtn');
 
-// Loader
-let prog = 0;
+let isSpinning = false;
+
+// ===== LOADER =====
+let loadProgress = 0;
 const loadInterval = setInterval(() => {
-    prog += 3;
-    if (prog >= 100) {
-        prog = 100;
-        $('progress').style.width = '100%';
+    loadProgress += Math.random() * 5 + 2;
+    if (loadProgress >= 100) {
+        loadProgress = 100;
+        progress.style.width = '100%';
         clearInterval(loadInterval);
-        setTimeout(() => $('loader').classList.add('hidden'), 400);
+        setTimeout(() => loader.classList.add('hidden'), 500);
     } else {
-        $('progress').style.width = prog + '%';
+        progress.style.width = loadProgress + '%';
     }
-}, 50);
+}, 80);
 
-// Spin
+// ===== SPIN FUNCTION =====
 function spin() {
-    if (spinning) return;
-    spinning = true;
+    if (isSpinning) return;
+    isSpinning = true;
+
+    // Haptic feedback
     if (navigator.vibrate) navigator.vibrate(30);
 
-    $('spinBtn').classList.add('disabled');
-    $('wheelBtn').classList.add('disabled');
+    // Disable buttons
+    spinBtn.classList.add('disabled');
+    wheelBtn.classList.add('disabled');
 
-    const spinner = $('spinner');
+    // Remove idle animation and start spin
     spinner.classList.remove('idle');
-    spinner.classList.add('spin-' + CONFIG.winSector);
+    spinner.classList.add('spinning');
 
+    // Add spin animation for winning sector
     setTimeout(() => {
+        spinner.classList.add('spin-to-' + CONFIG.winSector);
+    }, 50);
+
+    // After spin completes
+    setTimeout(() => {
+        // Haptic feedback on win
         if (navigator.vibrate) navigator.vibrate([50, 30, 50, 30, 100]);
+
+        // Update prize text
+        prizeText.textContent = CONFIG.prizes[CONFIG.winSector - 1];
+
+        // Add wobble effect
         spinner.classList.add('spin-done');
-        $('prizeText').textContent = CONFIG.prizes[CONFIG.winSector - 1];
-        $('modal').classList.add('visible');
-    }, 3200);
+
+        // Show modal after a brief pause
+        setTimeout(() => {
+            modal.classList.add('visible');
+        }, 500);
+
+    }, CONFIG.spinDuration + 200);
 }
 
+// ===== CLAIM FUNCTION =====
 function claim() {
     if (navigator.vibrate) navigator.vibrate([40, 20, 40]);
-    window.location.href = CONFIG.offerUrl + window.location.search;
+
+    // Redirect with URL parameters preserved
+    const params = window.location.search;
+    window.location.href = CONFIG.offerUrl + params;
 }
 
-$('spinBtn').onclick = spin;
-$('wheelBtn').onclick = spin;
-$('claimBtn').onclick = claim;
+// ===== EVENT LISTENERS =====
+spinBtn.addEventListener('click', spin);
+wheelBtn.addEventListener('click', spin);
+claimBtn.addEventListener('click', claim);
+
+// Touch events for better mobile experience
+spinBtn.addEventListener('touchend', e => {
+    e.preventDefault();
+    spin();
+});
+
+wheelBtn.addEventListener('touchend', e => {
+    e.preventDefault();
+    spin();
+});
+
+claimBtn.addEventListener('touchend', e => {
+    e.preventDefault();
+    claim();
+});
+
+// Prevent double-tap zoom on buttons
+document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
+});
 </script>
 </body>
 </html>
